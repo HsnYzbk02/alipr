@@ -1,8 +1,17 @@
 package View;
+import Controller.AppController;
+import Model.Librarian;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 public class ManageLibrarianView extends javax.swing.JFrame {
-    public ManageLibrarianView() {
+       private AppController appController;
+    public ManageLibrarianView(AppController appController) {
+        this.appController = appController;
         initComponents();
+        setLocationRelativeTo(null);
+        setTitle("Manage Librarians");
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -21,6 +30,7 @@ public class ManageLibrarianView extends javax.swing.JFrame {
         phone = new javax.swing.JTextField();
         add = new javax.swing.JButton();
         delete = new javax.swing.JButton();
+        C = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -39,10 +49,29 @@ public class ManageLibrarianView extends javax.swing.JFrame {
         add.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         add.setForeground(new java.awt.Color(0, 204, 204));
         add.setText("Add Librarian");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
 
         delete.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         delete.setForeground(new java.awt.Color(0, 204, 204));
         delete.setText("Delete Librarian");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
+
+        C.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        C.setForeground(new java.awt.Color(0, 204, 204));
+        C.setText("Close");
+        C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -80,7 +109,10 @@ public class ManageLibrarianView extends javax.swing.JFrame {
                         .addGap(159, 159, 159)
                         .addComponent(add)
                         .addGap(169, 169, 169)
-                        .addComponent(delete)))
+                        .addComponent(delete))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(327, 327, 327)
+                        .addComponent(C, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(105, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -110,20 +142,87 @@ public class ManageLibrarianView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(delete, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addComponent(C, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(68, 68, 68))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ManageLibrarianView().setVisible(true);
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+     String libId = id.getText().trim();
+        String username = USERNAME.getText().trim();
+        String password = PASS.getText().trim();
+        String libName = name.getText().trim();
+        String libEmail = email.getText().trim();
+        String libPhone = phone.getText().trim();
+
+        if (libId.isEmpty() || username.isEmpty() || password.isEmpty() || 
+            libName.isEmpty() || libEmail.isEmpty() || libPhone.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all fields!", 
+                "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Librarian librarian = new Librarian(libId, username, password, libName, libEmail, libPhone);
+        
+        if (appController.getLibrarianController().addLibrarian(librarian)) {
+            JOptionPane.showMessageDialog(this, "Librarian added successfully!", 
+                "Success", JOptionPane.INFORMATION_MESSAGE);
+            clearFields();
+        } else {
+            JOptionPane.showMessageDialog(this, "Librarian ID or Username already exists!", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_addActionPerformed
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+    String libId = id.getText().trim();
+        
+        if (libId.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter Librarian ID to delete!", 
+                "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to delete librarian with ID: " + libId + "?", 
+            "Confirm Delete", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (appController.getLibrarianController().deleteLibrarian(libId)) {
+                JOptionPane.showMessageDialog(this, "Librarian deleted successfully!", 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Librarian ID not found!", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
+
+    }//GEN-LAST:event_deleteActionPerformed
+
+    private void CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CActionPerformed
+      this.dispose();
+    }//GEN-LAST:event_CActionPerformed
+ private void clearFields() {
+        id.setText("");
+        USERNAME.setText("");
+        PASS.setText("");
+        name.setText("");
+        email.setText("");
+        phone.setText("");
+    }
+    public static void main(String args[]) {
+         java.awt.EventQueue.invokeLater(() -> {
+        AppController controller = new AppController();
+        new ManageLibrarianView(controller).setVisible(true);
+    });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton C;
     private javax.swing.JTextField PASS;
     private javax.swing.JTextField USERNAME;
     private javax.swing.JButton add;

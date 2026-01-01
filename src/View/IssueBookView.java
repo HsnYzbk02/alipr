@@ -4,20 +4,47 @@
  * and open the template in the editor.
  */
 package View;
+import Controller.AppController;
+import Model.Book;
+import Model.IssuedBook;
+import Model.Librarian;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-/**
- *
- * @author Alfa
- */
 public class IssueBookView extends javax.swing.JFrame {
-
-    /**
-     * Creates new form IssueBookView
-     */
-    public IssueBookView() {
+    private AppController appController;
+    private Librarian currentLibrarian;
+    
+     public IssueBookView(AppController appController, Librarian librarian) {
+        this.appController = appController;
+        this.currentLibrarian = librarian;
         initComponents();
+        initializeFields();
+    
+        setLocationRelativeTo(null);
+        setTitle("Issue Book");
     }
-
+     
+    private void clearFields() {
+        bnu.setText("");
+        bna.setText("");
+        quantity.setText("");
+    }
+    private void initializeFields() {
+        LibId.setText(currentLibrarian.getLibrarianId());
+        LibId.setEditable(false);
+        Libname.setText(currentLibrarian.getName());
+        Libname.setEditable(false);
+        
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        date.setText(today.format(formatter));
+        date.setEditable(false);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -38,10 +65,9 @@ public class IssueBookView extends javax.swing.JFrame {
         Libname = new javax.swing.JTextField();
         date = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        issue = new javax.swing.JTextField();
+        quantity = new javax.swing.JTextField();
         issuebook = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        Table = new javax.swing.JTable();
+        C = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,64 +81,60 @@ public class IssueBookView extends javax.swing.JFrame {
 
         jLabel5.setText("IssueDate:");
 
-        jLabel6.setText("Issued:");
+        jLabel6.setText("Quantity");
 
         issuebook.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         issuebook.setForeground(new java.awt.Color(0, 153, 0));
         issuebook.setText("IssueBook");
-
-        Table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "BookNumber", "BookName", "LibrarianId", "LibrarianName", "Issued", "IssueDate"
+        issuebook.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                issuebookActionPerformed(evt);
             }
-        ));
-        jScrollPane1.setViewportView(Table);
+        });
+
+        C.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        C.setForeground(new java.awt.Color(0, 153, 0));
+        C.setText("Close");
+        C.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(94, 94, 94)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(bna, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                    .addComponent(bnu)
-                    .addComponent(LibId))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
-                        .addComponent(issue))
-                    .addComponent(Libname, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(94, 94, 94)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(bna, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                            .addComponent(bnu)
+                            .addComponent(LibId))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
+                                .addComponent(quantity))
+                            .addComponent(Libname, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(issuebook)
+                        .addGap(117, 117, 117)
+                        .addComponent(C, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(146, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(307, 307, 307)
-                        .addComponent(issuebook))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 676, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,22 +150,81 @@ public class IssueBookView extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(bna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(issue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(quantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(LibId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(issuebook, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addGap(46, 46, 46)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(issuebook, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                    .addComponent(C, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(423, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void issuebookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_issuebookActionPerformed
+        String bookNumber = bnu.getText().trim();
+        String bookName = bna.getText().trim();
+
+        if (bookNumber.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter Book Number!", 
+                "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Book book = appController.getBookController().getBookByNumber(bookNumber);
+        
+        if (book == null) {
+            JOptionPane.showMessageDialog(this, "Book not found!", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        bna.setText(book.getBookName());
+        quantity.setText(String.valueOf(book.getIssued()));
+
+        if (book.getQuantity() <= book.getIssued()) {
+            JOptionPane.showMessageDialog(this, "No copies available for issuing!", 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Issue book '" + book.getBookName() + "' to " + currentLibrarian.getName() + "?", 
+            "Confirm Issue", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            LocalDate issueDate = LocalDate.now();
+            
+            if (appController.getBookController().issueBook(
+                    bookNumber, 
+                    currentLibrarian.getName(), 
+                    currentLibrarian.getLibrarianId(), 
+                    issueDate)) {
+                
+                JOptionPane.showMessageDialog(this, "Book issued successfully!", 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Update display
+                quantity.setText(String.valueOf(book.getIssued() + 1));
+               
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to issue book!", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_issuebookActionPerformed
+
+    private void CActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CActionPerformed
+   this.dispose();
+    }//GEN-LAST:event_CActionPerformed
 
     /**
      * @param args the command line arguments
@@ -173,21 +254,20 @@ public class IssueBookView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new IssueBookView().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            AppController controller = new AppController();
+            Librarian dummyLib = new Librarian("L001", "user", "pass", "Test User", "test@email.com", "1234567890");
+            new IssueBookView(controller, dummyLib).setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton C;
     private javax.swing.JTextField LibId;
     private javax.swing.JTextField Libname;
-    private javax.swing.JTable Table;
     private javax.swing.JTextField bna;
     private javax.swing.JTextField bnu;
     private javax.swing.JTextField date;
-    private javax.swing.JTextField issue;
     private javax.swing.JButton issuebook;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -195,6 +275,6 @@ public class IssueBookView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField quantity;
     // End of variables declaration//GEN-END:variables
 }

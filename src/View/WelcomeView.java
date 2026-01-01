@@ -1,11 +1,15 @@
 package View;
+import Controller.AppController;
+import Model.Librarian;
 import javax.swing.*;
+import java.awt.*;
 public class WelcomeView extends javax.swing.JFrame {
-    public WelcomeView() {
+     private AppController appController;
+       public WelcomeView(AppController appController) {
+        this.appController = appController;
         initComponents();
-        ButtonGroup  g= new ButtonGroup();
-        g.add(admin);
-        g.add(librarian);
+        setLocationRelativeTo(null);
+        setTitle("Library Management System - Login");
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -16,11 +20,11 @@ public class WelcomeView extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         UN = new javax.swing.JTextField();
-        PS = new javax.swing.JTextField();
         log = new javax.swing.JButton();
         admin = new javax.swing.JRadioButton();
         librarian = new javax.swing.JRadioButton();
         jLabel4 = new javax.swing.JLabel();
+        PS = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,8 +67,8 @@ public class WelcomeView extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(PS, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                            .addComponent(UN)))
+                            .addComponent(UN, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                            .addComponent(PS)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(200, 200, 200)
                         .addComponent(jLabel4)
@@ -92,8 +96,8 @@ public class WelcomeView extends javax.swing.JFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(PS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(48, 48, 48)
                 .addComponent(log, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
@@ -103,13 +107,46 @@ public class WelcomeView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void logActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logActionPerformed
- 
+  String username = UN.getText().trim();
+        String password = new String(PS.getText()).trim();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter username and password!", 
+                "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (admin.isSelected()) {
+            if (appController.authenticateAdmin(username, password)) {
+                JOptionPane.showMessageDialog(this, "Welcome Admin!", 
+                    "Login Successful", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+                AdminView adminView = new AdminView(appController);
+                adminView.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid admin credentials!", 
+                    "Login Failed", JOptionPane.ERROR_MESSAGE);
+                PS.setText("");
+            }
+        } else if (librarian.isSelected()) {
+            Librarian lib = appController.authenticateLibrarian(username, password);
+            if (lib != null) {
+                JOptionPane.showMessageDialog(this, "Welcome " + lib.getName() + "!", 
+                    "Login Successful", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+                LibrarianView libView = new LibrarianView(appController, lib);
+                libView.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid librarian credentials!", 
+                    "Login Failed", JOptionPane.ERROR_MESSAGE);
+                PS.setText("");
     }//GEN-LAST:event_logActionPerformed
-
-
+        
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField PS;
+    private javax.swing.JPasswordField PS;
     private javax.swing.JTextField UN;
     private javax.swing.JRadioButton admin;
     private javax.swing.ButtonGroup g;

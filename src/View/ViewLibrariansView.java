@@ -5,18 +5,25 @@
  */
 package View;
 
-/**
- *
- * @author Alfa
- */
+import Controller.AppController;
+import Model.Librarian;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.util.List;
 public class ViewLibrariansView extends javax.swing.JFrame {
-
+    private AppController appController;
     /**
      * Creates new form ViewLibrariansView
      */
-    public ViewLibrariansView() {
+    public ViewLibrariansView(AppController appController) {
+        this.appController = appController;
         initComponents();
+        loadLibrarians();
+        setLocationRelativeTo(null);
+        setTitle("View Librarians");
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -88,9 +95,23 @@ public class ViewLibrariansView extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_CActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+ private void loadLibrarians() {
+        DefaultTableModel model = (DefaultTableModel) T.getModel();
+        model.setRowCount(0);
+        
+        List<Librarian> librarians = appController.getLibrarianController().getAllLibrarians();
+        
+        for (Librarian lib : librarians) {
+            model.addRow(new Object[]{
+                lib.getLibrarianId(),
+                lib.getUsername(),
+                lib.getPassword(),
+                lib.getName(),
+                lib.getEmail(),
+                lib.getPhone()
+            });
+        }
+ }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -116,10 +137,9 @@ public class ViewLibrariansView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ViewLibrariansView().setVisible(true);
-            }
+      java.awt.EventQueue.invokeLater(() -> {
+            AppController controller = new AppController();
+            new ViewLibrariansView(controller).setVisible(true);
         });
     }
 

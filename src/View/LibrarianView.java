@@ -4,18 +4,20 @@
  * and open the template in the editor.
  */
 package View;
-
-/**
- *
- * @author Alfa
- */
+import Controller.AppController;
+import Model.Librarian;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 public class LibrarianView extends javax.swing.JFrame {
-
-    /**
-     * Creates new form LibrarianView
-     */
-    public LibrarianView() {
+ private AppController appController;
+    private Librarian currentLibrarian;
+ 
+    public LibrarianView(AppController appController, Librarian librarian) {
+        this.appController = appController;
+        this.currentLibrarian = librarian;
         initComponents();
+        setLocationRelativeTo(null);
+        setTitle("Librarian Dashboard - " + librarian.getName());
     }
 
     /**
@@ -45,18 +47,38 @@ public class LibrarianView extends javax.swing.JFrame {
         adddelete.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         adddelete.setForeground(new java.awt.Color(0, 0, 255));
         adddelete.setText("Add/Delete Book");
+        adddelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adddeleteActionPerformed(evt);
+            }
+        });
 
         issue.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         issue.setForeground(new java.awt.Color(51, 51, 255));
         issue.setText("Issue Book");
+        issue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                issueActionPerformed(evt);
+            }
+        });
 
         ret.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         ret.setForeground(new java.awt.Color(0, 0, 255));
         ret.setText("Return Book");
+        ret.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                retActionPerformed(evt);
+            }
+        });
 
         LOUT.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         LOUT.setForeground(new java.awt.Color(0, 0, 255));
         LOUT.setText("Logout");
+        LOUT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LOUTActionPerformed(evt);
+            }
+        });
 
         vie.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         vie.setForeground(new java.awt.Color(0, 0, 255));
@@ -70,6 +92,11 @@ public class LibrarianView extends javax.swing.JFrame {
         VIB.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         VIB.setForeground(new java.awt.Color(0, 0, 255));
         VIB.setText("View Issued Book");
+        VIB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                VIBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,41 +139,51 @@ public class LibrarianView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void vieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vieActionPerformed
-        // TODO add your handling code here:
+       ViewBooksView viewBooks = new ViewBooksView(appController);
+        viewBooks.setVisible(true);
     }//GEN-LAST:event_vieActionPerformed
+
+    private void adddeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adddeleteActionPerformed
+      ManageBookView manageBook = new ManageBookView(appController);
+        manageBook.setVisible(true);
+    }//GEN-LAST:event_adddeleteActionPerformed
+
+    private void issueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_issueActionPerformed
+       IssueBookView issueView = new IssueBookView(appController, currentLibrarian);
+        issueView.setVisible(true);
+    }//GEN-LAST:event_issueActionPerformed
+
+    private void retActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_retActionPerformed
+         ReturnBookView returnView = new ReturnBookView(appController, currentLibrarian);
+        returnView.setVisible(true);
+    }//GEN-LAST:event_retActionPerformed
+
+    private void VIBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VIBActionPerformed
+        ViewIssuedBooksView viewIssued = new ViewIssuedBooksView(appController);
+        viewIssued.setVisible(true);
+    }//GEN-LAST:event_VIBActionPerformed
+
+    private void LOUTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LOUTActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to logout?", 
+            "Confirm Logout", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.dispose();
+            WelcomeView welcome = new WelcomeView(appController);
+            welcome.setVisible(true);
+        }
+    }//GEN-LAST:event_LOUTActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LibrarianView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LibrarianView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LibrarianView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LibrarianView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LibrarianView().setVisible(true);
-            }
+         java.awt.EventQueue.invokeLater(() -> {
+            AppController controller = new AppController();
+            Librarian dummyLib = new Librarian("L001", "user", "pass", "Test User", "test@email.com", "1234567890");
+            new LibrarianView(controller, dummyLib).setVisible(true);
         });
     }
 

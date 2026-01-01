@@ -5,17 +5,23 @@
  */
 package View;
 
+import Controller.AppController;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Alfa
  */
 public class AdminView extends javax.swing.JFrame {
+private AppController appController;
 
-    /**
-     * Creates new form AdminView
-     */
-    public AdminView() {
+    
+     
+   public AdminView(AppController appController) {
+        this.appController = appController;
         initComponents();
+        setLocationRelativeTo(null);
+        setTitle("Admin Dashboard");
     }
 
     /**
@@ -43,14 +49,29 @@ public class AdminView extends javax.swing.JFrame {
         ad.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         ad.setForeground(new java.awt.Color(204, 0, 204));
         ad.setText("Add/Delete Librarian");
+        ad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adActionPerformed(evt);
+            }
+        });
 
         LOG.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         LOG.setForeground(new java.awt.Color(204, 0, 204));
         LOG.setText("Logout");
+        LOG.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LOGActionPerformed(evt);
+            }
+        });
 
         view.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         view.setForeground(new java.awt.Color(204, 0, 204));
         view.setText("View Libaraians");
+        view.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -81,6 +102,29 @@ public class AdminView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void adActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adActionPerformed
+         ManageLibrarianView manageView = new ManageLibrarianView(appController);
+        manageView.setVisible(true);
+    }//GEN-LAST:event_adActionPerformed
+
+    private void viewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewActionPerformed
+          ViewLibrariansView viewLib = new ViewLibrariansView(appController);
+        viewLib.setVisible(true);
+    }//GEN-LAST:event_viewActionPerformed
+
+    private void LOGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LOGActionPerformed
+       int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to logout?", 
+            "Confirm Logout", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.dispose();
+            WelcomeView welcome = new WelcomeView(appController);
+            welcome.setVisible(true);
+        }
+    }//GEN-LAST:event_LOGActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -109,10 +153,9 @@ public class AdminView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AdminView().setVisible(true);
-            }
+      java.awt.EventQueue.invokeLater(() -> {
+            AppController controller = new AppController();
+            new AdminView(controller).setVisible(true);
         });
     }
 
